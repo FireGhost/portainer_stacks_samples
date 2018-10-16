@@ -1,0 +1,44 @@
+#####
+# Change the "MYSQL_" environment variables to whatever you want.
+#
+# Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
+# Don't forget to rename all the "mydomain.tld" as well !
+#####
+
+web:
+  image: nginx:1.15-alpine
+  environment:
+    - VIRTUAL_HOST=mydomain.tld
+    - LETSENCRYPT_HOST=mydomain.tld
+    - LETSENCRYPT_EMAIL=mymail@domain.tld
+  expose:
+    - "80"
+  volumes:
+    - sources:/usr/share/nginx/html
+    - web_conf:/etc/nginx/conf.d
+  links:
+    - php
+  restart: always
+
+php:
+  image: php:7.2-fpm-alpine
+  command:
+    - 'sh'
+    - '-c'
+    - 'apk add icu-dev ; docker-php-ext-install intl pdo pdo_mysql ; php-fpm -R'
+  volumes:
+    - sources:/usr/share/nginx/html
+  links:
+    - db
+  restart: always
+
+db:
+  image: mariadb:10.3
+  environment:
+    - MYSQL_ROOT_PASSWORD=anyrandomlygeneratedpassword
+    - MYSQL_USER=anyusername
+    - MYSQL_DATABASE=anydatabasename
+    - MYSQL_PASSWORD=anotherrandomlygeneratedpassword
+  volumes:
+    - database:/var/lib/mysql
+  restart: always
