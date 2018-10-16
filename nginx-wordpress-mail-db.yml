@@ -16,6 +16,9 @@
 # Change in this file the line `sed -i "s/Linux User/[Remove those braces here and put a FROM name for your mails]/" /etc/passwd` with the value you want.
 #
 # Finally, change the "MYSQL_" environment variables to whatever you want.
+#
+# Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
+# Don't forget to rename all the "mydomain.tld" as well !
 #####
 
 web:
