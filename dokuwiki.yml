@@ -1,0 +1,17 @@
+#####
+# Dokuwiki is a light and easy to use wiki platform using files instead of database.
+#
+# Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
+# Don't forget to rename all the "mydomain.tld" as well !
+#####
+
+dokuwiki:
+  image: bitnami/dokuwiki:0.20180422.201805030840
+  environment:
+    - VIRTUAL_HOST=mydomain.tld
+    - LETSENCRYPT_HOST=mydomain.tld
+    - LETSENCRYPT_EMAIL=mymail@domain.tld
+  volumes:
+    - wiki_conf:/bitnami/dokuwiki/conf
+    - wiki_data:/bitnami/dokuwiki/data
+  restart: always
