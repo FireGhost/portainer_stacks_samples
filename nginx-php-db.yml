@@ -1,6 +1,10 @@
 #####
 # Change the "MYSQL_" environment variables to whatever you want.
 #
+# In order to add some php extensions, you can uncomment the commands under "php" and edit as needed.
+# `apk add PACKAGE` will add a package to the container.
+# `docker-php-ext-install PHP_EXTENSION ...` will install php extensions.
+#
 # Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
 # Don't forget to rename all the "mydomain.tld" as well !
 #####
@@ -22,10 +26,10 @@ web:
 
 php:
   image: php:7.2-fpm-alpine
-  command:
-    - 'sh'
-    - '-c'
-    - 'apk add icu-dev ; docker-php-ext-install intl pdo pdo_mysql ; php-fpm -R'
+#  command:
+#    - 'sh'
+#    - '-c'
+#    - 'apk add icu-dev ; docker-php-ext-install intl pdo pdo_mysql ; php-fpm -R'
   volumes:
     - sources:/usr/share/nginx/html
   links:
