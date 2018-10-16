@@ -1,0 +1,47 @@
+#####
+# Gitea is a very light and very fast interface for your git repositories.
+#
+# In this case, I've added the volume "gitea_hooks_tmpl" in order to edit the templates of the GIT hooks.
+# I've added the host's docker.sock as well in order to be able to use docker inside the GIT hooks.
+#
+# Change the "MYSQL_" environment variables to whatever you want.
+#
+# Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
+# Don't forget to rename all the "mydomain.tld" as well !
+#####
+
+web:
+  image: gitea/gitea:1.5
+  environment:
+    - VIRTUAL_HOST=mydomain.tld
+    - VIRTUAL_PORT=3000
+    - LETSENCRYPT_HOST=mydomain.tld
+    - LETSENCRYPT_EMAIL=mymail@domain.tld
+
+    - USER_UID=0
+    - USER_GID=0
+  volumes:
+    - gitea_data:/data
+    - gitea_conf:/data/gitea/conf
+   
+    - gitea_hooks_tmpl:/usr/share/git-core/templates/hooks
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+#    - any_sources:/deployed/any_sources
+#    - another_sources:/deployed/another_sources
+  ports:
+    - "2222:22"
+  links:
+    - db
+  restart: always
+
+db:
+  image: mariadb:10.3
+  environment:
+    - MYSQL_ROOT_PASSWORD=anyrandomlygeneratedpassword
+    - MYSQL_USER=anyusername
+    - MYSQL_DATABASE=anydatabasename
+    - MYSQL_PASSWORD=anotherrandomlygeneratedpassword
+  volumes:
+    - database:/var/lib/mysql
+  restart: always
