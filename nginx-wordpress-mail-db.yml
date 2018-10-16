@@ -40,7 +40,7 @@ php:
   command:
     - 'sh'
     - '-c'
-    - 'apk add ssmtp ; sed -i "s/Linux User/Montolan/" /etc/passwd ; php-fpm -R'
+    - 'apk add ssmtp ; sed -i "s/Linux User/John Doe/" /etc/passwd ; php-fpm -R'
   links:
     - db
     - mail
