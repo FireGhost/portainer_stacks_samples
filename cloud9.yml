@@ -1,0 +1,22 @@
+#####
+# Cloud9 is an online IDE. It's usefull for editing some documents that doesn't need a version control.
+#
+# Just add the volumes that contain the files that you want to edit in the workspace, like the two commented volumes below.
+# You can protect the access to this instance by adding the command commented.
+#####
+
+cloud9:
+  image: sapk/cloud9:alpine
+  environment:
+    - VIRTUAL_HOST=mydomain.tld
+    - LETSENCRYPT_HOST=mydomain.tld
+    - LETSENCRYPT_EMAIL=mymail@domain.tld
+  volumes:
+    - cloud9_settings:/root/.c9
+    - cloud9_workspace:/workspace
+    
+#    - any_volume_i_want:/workspace/any_volume_i_want
+#    - and_another_volume_i_want:/workspace/and_another_volume_i_want
+    
+#  command: "--auth username:password"
+  command: "--auth :"
