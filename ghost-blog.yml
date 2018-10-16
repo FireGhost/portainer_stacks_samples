@@ -1,0 +1,37 @@
+#####
+# Ghost is a light blogging platform using JS.
+#
+# Change the "MYSQL_" environment variables to whatever you want.
+#
+# Don't forget to rename the volumes if necessary to not use the same volumes in two different stacks.
+# Don't forget to rename all the "mydomain.tld" as well !
+#####
+
+ghost:
+  image: ghost:1.25-alpine
+  restart: always
+  environment:
+    VIRTUAL_HOST: mydomain.tld
+    LETSENCRYPT_HOST: mydomain.tld
+    LETSENCRYPT_EMAIL: mymail@domain.tld
+    url: https://mydomain.tld
+    database__client: mysql
+    database__connection__host: db
+    database__connection__database: thedatabasename
+    database__connection__user: theusername
+    database__connection__password: thedatabasepassword
+  links:
+    - db
+  volumes:
+    - ghost_content:/var/lib/ghost/content
+
+db:
+  image: mariadb:10.3
+  environment:
+    - MYSQL_ROOT_PASSWORD=anyrandomlygeneratedpassword
+    - MYSQL_USER=anyusername
+    - MYSQL_DATABASE=anydatabasename
+    - MYSQL_PASSWORD=anotherrandomlygeneratedpassword
+  volumes:
+    - database:/var/lib/mysql
+  restart: always
