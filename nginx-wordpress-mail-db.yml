@@ -1,0 +1,68 @@
+#####
+# For this stack, before first launch, comment out all the volumes from the "web" container.
+# Doing so, the wordpress image will copy the content to the "sources" volume.
+# Then, stop the stack, uncomment the volumes from the "web" container and launch the stack again.
+#
+# After the launch of the stack, you will need to update the file /etc/ssmtp/ssmtp.conf in the container "php" like so:
+#### php:/etc/ssmtp/ssmtp.conf
+# mailhub=mail
+# hostname=mydomain.tld
+####
+#
+# You will need to update the file /etc/ssmtp/revaliases as well from the "php" container.
+# You will need to add this line at the end of the file:
+#   www-data:info@mydomain.tld:mail
+#
+# Change in this file the line `sed -i "s/Linux User/[Remove those braces here and put a FROM name for your mails]/" /etc/passwd` with the value you want.
+#
+# Finally, change the "MYSQL_" environment variables to whatever you want.
+#####
+
+
+web:
+  image: nginx:1.15-alpine
+  environment:
+    - VIRTUAL_HOST=mydomain.tld
+    - LETSENCRYPT_HOST=mydomain.tld
+    - LETSENCRYPT_EMAIL=mymail@mydomain.tld
+    - VIRTUAL_PROTO=https
+    - VIRTUAL_PORT=443
+  expose:
+    - "443"
+  volumes:
+    - sources:/var/www/html
+    - web_conf:/etc/nginx/conf.d
+  links:
+    - php
+  restart: always
+
+php:
+  image: wordpress:4.9-php7.2-fpm-alpine
+  command:
+    - 'sh'
+    - '-c'
+    - 'apk add ssmtp ; sed -i "s/Linux User/Montolan/" /etc/passwd ; php-fpm -R'
+  links:
+    - db
+    - mail
+  volumes:
+    - sources:/var/www/html
+    - ssmtp_conf:/etc/ssmtp
+  restart: always
+
+mail:
+  image: namshi/smtp:latest
+  environment:
+    - MAILNAME=mydomain.tld
+  restart: always
+
+db:
+  image: mariadb:10.3
+  environment:
+    - MYSQL_ROOT_PASSWORD=anyrandomlygeneratedpassword
+    - MYSQL_USER=anyusername
+    - MYSQL_DATABASE=anydatabasename
+    - MYSQL_PASSWORD=anotherrandomlygeneratedpassword
+  volumes:
+    - database:/var/lib/mysql
+  restart: always
