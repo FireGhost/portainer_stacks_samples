@@ -9,6 +9,7 @@ The main stack from this repo is an *nginx-proxy + letsencrypt companion + porta
 
 To run the main stack, edit the variables in the script *start_main_stack.sh* and launch it!
 
+# Variables from main stack
 All the stacks from this repo is using the environment variables given by the *nginx-proxy* image and the *letsencrypt* image.
 
 The mandatory variables for each sites are:
